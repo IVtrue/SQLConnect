@@ -34,9 +34,6 @@ extern "C"
 #define TDS_STATIC_CAST(type, a) ((type)(a))
 #endif
 
-static const char rcsid_cspublic_h[] = "$Id: cspublic.h,v 1.61 2008/09/08 17:50:25 jklowden Exp $";
-static const void *const no_unused_cspublic_h_warn[] = { rcsid_cspublic_h, no_unused_cspublic_h_warn };
-
 #define CS_PUBLIC
 #define CS_STATIC static
 
@@ -274,7 +271,10 @@ enum
 	CS_TDS_495,
 	CS_TDS_50,
 	CS_TDS_70,
-	CS_TDS_80
+	CS_TDS_71,
+	CS_TDS_72,
+	CS_TDS_73,
+	CS_TDS_74,
 };
 
 /* bit mask values used by CS_DATAFMT.status */
@@ -338,37 +338,37 @@ enum
 #define CS_CUR_ROWCOUNT      TDS_STATIC_CAST(CS_INT, 9129)
 
 /* options accepted by ct_options() */
-#define CS_OPT_DATEFIRST        5001
-#define CS_OPT_TEXTSIZE         5002
-#define CS_OPT_STATS_TIME       5003
-#define CS_OPT_STATS_IO         5004
-#define CS_OPT_ROWCOUNT         5005
-#define CS_OPT_DATEFORMAT       5007
-#define CS_OPT_ISOLATION        5008
-#define CS_OPT_AUTHON           5009
-#define CS_OPT_SHOWPLAN         5013
-#define CS_OPT_NOEXEC           5014
-#define CS_OPT_ARITHIGNORE      5015
-#define CS_OPT_TRUNCIGNORE      5016
-#define CS_OPT_ARITHABORT       5017
-#define CS_OPT_PARSEONLY        5018
-#define CS_OPT_GETDATA          5020
-#define CS_OPT_NOCOUNT          5021
-#define CS_OPT_FORCEPLAN        5023
-#define CS_OPT_FORMATONLY       5024
-#define CS_OPT_CHAINXACTS       5025
+#define CS_OPT_DATEFIRST	5001
+#define CS_OPT_TEXTSIZE		5002
+#define CS_OPT_STATS_TIME	5003
+#define CS_OPT_STATS_IO		5004
+#define CS_OPT_ROWCOUNT		5005
+#define CS_OPT_DATEFORMAT	5007
+#define CS_OPT_ISOLATION	5008
+#define CS_OPT_AUTHON		5009
+#define CS_OPT_SHOWPLAN		5013
+#define CS_OPT_NOEXEC		5014
+#define CS_OPT_ARITHIGNORE	5015
+#define CS_OPT_TRUNCIGNORE	5016
+#define CS_OPT_ARITHABORT	5017
+#define CS_OPT_PARSEONLY	5018
+#define CS_OPT_GETDATA		5020
+#define CS_OPT_NOCOUNT		5021
+#define CS_OPT_FORCEPLAN	5023
+#define CS_OPT_FORMATONLY	5024
+#define CS_OPT_CHAINXACTS	5025
 #define CS_OPT_CURCLOSEONXACT	5026
-#define CS_OPT_FIPSFLAG         5027
-#define CS_OPT_RESTREES         5028
-#define CS_OPT_IDENTITYON       5029
-#define CS_OPT_CURREAD          5030
-#define CS_OPT_CURWRITE         5031
-#define CS_OPT_IDENTITYOFF      5032
-#define CS_OPT_AUTHOFF          5033
-#define CS_OPT_ANSINULL         5034
-#define CS_OPT_QUOTED_IDENT     5035
-#define CS_OPT_ANSIPERM         5036
-#define CS_OPT_STR_RTRUNC       5037
+#define CS_OPT_FIPSFLAG		5027
+#define CS_OPT_RESTREES		5028
+#define CS_OPT_IDENTITYON	5029
+#define CS_OPT_CURREAD		5030
+#define CS_OPT_CURWRITE		5031
+#define CS_OPT_IDENTITYOFF	5032
+#define CS_OPT_AUTHOFF		5033
+#define CS_OPT_ANSINULL		5034
+#define CS_OPT_QUOTED_IDENT	5035
+#define CS_OPT_ANSIPERM		5036
+#define CS_OPT_STR_RTRUNC	5037
 
 /* options accepted by ct_command() */
 enum ct_command_options
@@ -406,7 +406,7 @@ enum
 #define CS_COMPLETION_CB	1
 #define CS_SERVERMSG_CB		2
 #define CS_CLIENTMSG_CB		3
-#define CS_NOTIF_CB         4
+#define CS_NOTIF_CB		4
 #define CS_ENCRYPT_CB		5
 #define CS_CHALLENGE_CB		6
 #define CS_DS_LOOKUP_CB		7
@@ -578,6 +578,8 @@ enum
 #define CS_UINT_TYPE        TDS_STATIC_CAST(CS_INT, 32)
 #define CS_UBIGINT_TYPE     TDS_STATIC_CAST(CS_INT, 33)
 #define CS_XML_TYPE         TDS_STATIC_CAST(CS_INT, 34)
+#define CS_BIGDATETIME_TYPE TDS_STATIC_CAST(CS_INT, 35)
+#define CS_BIGTIME_TYPE     TDS_STATIC_CAST(CS_INT, 36)
 #define CS_UNIQUE_TYPE      TDS_STATIC_CAST(CS_INT, 40)
 
 #define CS_USER_TYPE        TDS_STATIC_CAST(CS_INT, 100)
@@ -727,7 +729,10 @@ CS_RETCODE cs_ctx_drop(CS_CONTEXT * ctx);
 CS_RETCODE cs_config(CS_CONTEXT * ctx, CS_INT action, CS_INT property, CS_VOID * buffer, CS_INT buflen, CS_INT * outlen);
 CS_RETCODE cs_strbuild(CS_CONTEXT * ctx, CS_CHAR * buffer, CS_INT buflen, CS_INT * resultlen, CS_CHAR * text, CS_INT textlen,
 		       CS_CHAR * formats, CS_INT formatlen, ...);
+#undef cs_dt_crack
 CS_RETCODE cs_dt_crack(CS_CONTEXT * ctx, CS_INT datetype, CS_VOID * dateval, CS_DATEREC * daterec);
+CS_RETCODE cs_dt_crack_v2(CS_CONTEXT * ctx, CS_INT datetype, CS_VOID * dateval, CS_DATEREC * daterec);
+#define cs_dt_crack cs_dt_crack_v2
 CS_RETCODE cs_loc_alloc(CS_CONTEXT * ctx, CS_LOCALE ** locptr);
 CS_RETCODE cs_loc_drop(CS_CONTEXT * ctx, CS_LOCALE * locale);
 CS_RETCODE cs_locale(CS_CONTEXT * ctx, CS_INT action, CS_LOCALE * locale, CS_INT type, CS_VOID * buffer, CS_INT buflen,
